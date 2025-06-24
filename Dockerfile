@@ -17,7 +17,7 @@ RUN dnf update -y && \
         which \
         fontconfig && \
     dnf clean all
-RUN dnf install -y dejavu-sans-fonts dejavu-serif-fonts dejavu-mono-fonts && dnf clean all
+RUN dnf install -y dejavu-fonts && dnf clean all
 RUN dnf install -y vim && dnf clean all
 WORKDIR /workspace
 CMD ["bash"]
