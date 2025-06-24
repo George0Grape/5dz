@@ -1,0 +1,30 @@
+name: Build LaTeX Resume
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: docker.io/fedora:latest
+      options: --user root
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install LaTeX and fonts
+        run: |
+          dnf update -y
+          dnf install -y \
+            texlive-scheme-full \
+            latexmk \
+            dejavu-sans-fonts \
+            dejavu-serif-fonts \
+            dejavu-sans-mono-fonts \
+            fontconfig
+          dnf clean all
+          fc-cache -fv
+      - name: Compile LaTeX
+        run: latexmk -pdf -interaction=nonstopmode main.tex
+      - uses: actions/upload-artifact@v4
+        with:
+          name: resume.pdf
+          path: resume.pdf
