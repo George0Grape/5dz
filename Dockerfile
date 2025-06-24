@@ -1,23 +1,16 @@
-FROM fedora:32
+FROM fedora:latest
+
 RUN dnf update -y && \
     dnf install -y \
-        texlive-scheme-basic \
-        texlive-collection-latex \
-        texlive-collection-latexrecommended \
-        texlive-collection-latexextra \
-        texlive-collection-fontsrecommended \
-        texlive-collection-langcyrillic \
-        texlive-collection-xetex \
-        texlive-collection-fontsrecommended \
+        texlive-scheme-full \
         latexmk \
-        ghostscript \
-        poppler-utils \
-        wget \
-        git \
-        which \
-        fontconfig && \
-    dnf clean all
-RUN dnf install -y dejavu-fonts && dnf clean all
-RUN dnf install -y vim && dnf clean all
+        fontconfig \
+        dejavu-sans-fonts \
+        dejavu-serif-fonts \
+        dejavu-sans-mono-fonts \
+        vim \
+    && dnf clean all
+
 WORKDIR /workspace
-CMD ["bash"]
+COPY . .
+CMD ["latexmk", "-pdf", "main.tex"]
