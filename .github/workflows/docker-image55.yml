@@ -1,0 +1,41 @@
+name: Build LaTeX Document
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-latex:
+    runs-on: ubuntu-latest
+    container:
+      image: docker.io/fedora:latest
+      options: --user root
+      
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    
+    - name: Install LaTeX and dependencies
+      run: |
+        dnf update -y
+        dnf install -y \
+          texlive-scheme-full \
+          latexmk \
+          'dejavu-*fonts' \
+          fontconfig \
+          git \
+          wget
+        dnf clean all
+        fc-cache -fv
+    
+    - name: Compile LaTeX document
+      run: |
+        latexmk -pdf -interaction=nonstopmode main.tex
+        
+    - name: Upload PDF artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: CV.pdf
+        path: main.pdf
